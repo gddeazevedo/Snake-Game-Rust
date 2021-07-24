@@ -1,16 +1,10 @@
-mod direction;
-mod block;
-
 use std::collections::LinkedList;
-use piston_window::{ types::Color, Context, G2d };
+use piston_window::{ Context, G2d };
 use crate::draw::draw_block;
+use crate::direction::Direction;
+use crate::block::Block;
+use crate::constants::SNAKE_COLOR;
 
-
-pub type Block = block::Block;
-pub type Direction = direction::Direction;
-
-
-const SNAKE_COLOR: Color = [0.0, 0.8, 0.0, 1.0];
 
 
 pub struct Snake {
@@ -76,14 +70,14 @@ impl Snake {
 
     pub fn next_head(&self, direction: Option<Direction>) -> (i32, i32) {
         let (head_x, head_y) = self.head_position();
-        let mut moving_dir = self.direction;
+        let mut current_direction = self.direction;
 
         match direction {
-            Some(new_dir) => moving_dir = new_dir,
+            Some(new_direction) => current_direction = new_direction,
             None => (),
         }
 
-        match moving_dir {
+        match current_direction {
             Direction::Up => (head_x, head_y - 1),
             Direction::Down => (head_x, head_y + 1),
             Direction::Left => (head_x - 1, head_y),
@@ -92,15 +86,15 @@ impl Snake {
     }
 
     pub fn restore_tail(&mut self) {
-        let block = self.tail.clone().unwrap();
-        self.body.push_back(block);
+        let tail = self.tail.clone().unwrap();
+        self.body.push_back(tail);
     }
 
     pub fn overlap_tail(&self, x: i32, y: i32) -> bool {
         let mut i = 0;
 
-        for block in &self.body {
-            if x == block.x && y == block.y {
+        for body_part in &self.body {
+            if x == body_part.x && y == body_part.y {
                 return true;
             }
 

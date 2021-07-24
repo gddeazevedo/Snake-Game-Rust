@@ -1,26 +1,27 @@
 mod draw;
 mod snake;
 mod game;
+mod block;
+mod direction;
+mod food;
+mod constants;
 
 use game::Game;
-use draw::to_coord_u32;
+use draw::scale_up_u32;
+use constants::{ BG_COLOR, WIDTH, HEIGHT };
 use piston_window::*;
-use piston_window::types::Color;
 
-
-const BG_COLOR: Color = [0.5, 0.5, 0.5, 1.0];
 
 
 fn main() {
-    let (width, height) = (25, 25);
     let mut window: PistonWindow = WindowSettings::new(
         "Snake",
-        [to_coord_u32(width), to_coord_u32(height)],
+        [scale_up_u32(WIDTH), scale_up_u32(HEIGHT)],
     ).exit_on_esc(true)
         .build()
         .unwrap();
 
-    let mut game = Game::new(width, height);
+    let mut game = Game::new();
 
     while let Some(event) = window.next() {
         if let Some(Button::Keyboard(key)) = event.press_args() {
