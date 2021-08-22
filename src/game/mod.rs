@@ -1,10 +1,14 @@
+pub mod constants;
+pub mod draw;
+
+
 use piston_window::*;
 use rand::{ thread_rng, Rng };
-use crate::draw::draw_rectangle;
-use crate::snake::Snake;
-use crate::direction::Direction;
-use crate::food::Food;
-use crate::constants::{
+use draw::draw_rectangle;
+use crate::entity::snake::Snake;
+use crate::entity::direction::Direction;
+use crate::entity::food::Food;
+use constants::{
     MOVING_PERIOD,
     RESTART_TIME,
     GAMEOVER_COLOR,
@@ -79,7 +83,6 @@ impl Game {
         }
 
         if self.waiting_time > MOVING_PERIOD {
-            println!("{}", self.waiting_time);
             self.update_snake(None);
         }
     }
@@ -93,16 +96,6 @@ impl Game {
         }
     }
 
-    fn snake_is_alive(&self, direction: Option<Direction>) -> bool {
-        let (next_x, next_y) = self.snake.next_head(direction);
-
-        if self.snake.overlap_tail(next_x, next_y) {
-            return false;
-        }
-
-        next_x > -1 && next_y > -1 && next_x < WIDTH && next_y < HEIGHT
-    }
-
     fn add_food(&mut self) {
         let mut rng = thread_rng();
 
@@ -114,13 +107,11 @@ impl Game {
             new_food_y = rng.gen_range(0..HEIGHT);
         }
 
-        self.food.x = new_food_x;
-        self.food.y = new_food_y;
-        self.food.exist = true;
+        self.food.update(new_food_x, new_food_x, true);
     }
 
     fn update_snake(&mut self, direction: Option<Direction>) {
-        if self.snake_is_alive(direction) {
+        if self.snake.is_alive(direction) {
             self.snake.move_forward(direction);
             self.check_eating();
         } else {

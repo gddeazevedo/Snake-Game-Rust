@@ -1,14 +1,9 @@
-mod draw;
-mod snake;
 mod game;
-mod block;
-mod direction;
-mod food;
-mod constants;
+mod entity;
 
 use game::Game;
-use draw::scale_up_u32;
-use constants::{ BG_COLOR, WIDTH, HEIGHT };
+use game::draw::scale_up_u32;
+use game::constants::{ BG_COLOR, WIDTH, HEIGHT };
 use piston_window::*;
 
 

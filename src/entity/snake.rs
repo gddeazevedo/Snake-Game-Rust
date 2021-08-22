@@ -1,9 +1,9 @@
 use std::collections::LinkedList;
 use piston_window::{ Context, G2d };
-use crate::draw::draw_block;
-use crate::direction::Direction;
-use crate::block::Block;
-use crate::constants::SNAKE_COLOR;
+use crate::game::draw::draw_block;
+use crate::entity::direction::Direction;
+use crate::entity::block::Block;
+use crate::game::constants::{ SNAKE_COLOR, WIDTH, HEIGHT };
 
 
 
@@ -88,6 +88,16 @@ impl Snake {
     pub fn restore_tail(&mut self) {
         let tail = self.tail.clone().unwrap();
         self.body.push_back(tail);
+    }
+
+    pub fn is_alive(&self, direction: Option<Direction>) -> bool {
+        let (next_x, next_y) = self.next_head(direction);
+
+        if self.overlap_tail(next_x, next_y) {
+            return false;
+        }
+
+        next_x > -1 && next_y > -1 && next_x < WIDTH && next_y < HEIGHT
     }
 
     pub fn overlap_tail(&self, x: i32, y: i32) -> bool {

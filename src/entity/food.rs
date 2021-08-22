@@ -1,6 +1,6 @@
 use piston_window::{ Context, G2d };
-use crate::constants::FOOD_COLOR;
-use crate::draw::draw_block;
+use crate::game::constants::FOOD_COLOR;
+use crate::game::draw::draw_block;
 
 pub struct Food {
     pub x: i32,
@@ -19,5 +19,11 @@ impl Food {
         if self.exist {
             draw_block(FOOD_COLOR, self.x, self.y, ctx, g);
         }
+    }
+
+    pub fn update(&mut self, x: i32, y: i32, exist: bool) {
+        self.x = x;
+        self.y = y;
+        self.exist = exist;
     }
 }
