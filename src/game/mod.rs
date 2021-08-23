@@ -34,7 +34,7 @@ impl Game {
             waiting_time: 0.0,
             food: Food::new(WIDTH / 2, HEIGHT / 2),
             game_over: false,
-            paused: true,
+            paused: false,
         }
     }
 }
