@@ -101,16 +101,16 @@ impl Snake {
     }
 
     pub fn overlap_tail(&self, x: i32, y: i32) -> bool {
-        let mut i = 0;
+        let mut counter = 0;
 
         for body_part in &self.body {
             if x == body_part.x && y == body_part.y {
                 return true;
             }
 
-            i += 1;
+            counter += 1;
 
-            if i == self.body.len() - 1 {
+            if counter == self.body.len() - 1 {
                 break;
             }
         }

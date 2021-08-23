@@ -20,10 +20,4 @@ impl Food {
             draw_block(FOOD_COLOR, self.x, self.y, ctx, g);
         }
     }
-
-    pub fn update(&mut self, x: i32, y: i32, exist: bool) {
-        self.x = x;
-        self.y = y;
-        self.exist = exist;
-    }
 }

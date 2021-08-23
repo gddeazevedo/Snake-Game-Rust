@@ -7,7 +7,6 @@ use game::constants::{ BG_COLOR, WIDTH, HEIGHT };
 use piston_window::*;
 
 
-
 fn main() {
     let mut window: PistonWindow = WindowSettings::new(
         "Snake",

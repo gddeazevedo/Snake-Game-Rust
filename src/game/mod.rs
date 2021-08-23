@@ -12,6 +12,7 @@ use constants::{
     MOVING_PERIOD,
     RESTART_TIME,
     GAMEOVER_COLOR,
+    PAUSED_COLOR,
     WIDTH,
     HEIGHT
 };
@@ -21,6 +22,7 @@ pub struct Game {
     snake: Snake,
     food: Food,
     game_over: bool,
+    paused: bool,
     waiting_time: f64,
 }
 
@@ -31,7 +33,8 @@ impl Game {
             snake: Snake::new(2, 2),
             waiting_time: 0.0,
             food: Food::new(WIDTH / 2, HEIGHT / 2),
-            game_over: false
+            game_over: false,
+            paused: true,
         }
     }
 }
@@ -43,15 +46,29 @@ impl Game {
             return;
         }
 
+        if self.paused && key == Key::P {
+            self.paused = false;
+            return;
+        } else if self.paused {
+            return;
+        } else if !self.paused && key == Key::P {
+            self.paused = true;
+            return;
+        }
+
         let direction = match key {
             Key::Up => Some(Direction::Up),
             Key::Down => Some(Direction::Down),
             Key::Left => Some(Direction::Left),
             Key::Right => Some(Direction::Right),
+            Key::W => Some(Direction::Up),
+            Key::S => Some(Direction::Down),
+            Key::A => Some(Direction::Left),
+            Key::D => Some(Direction::Right),
             _ => None,
         };
 
-        if direction.unwrap() == self.snake.head_direction().opposite() {
+        if direction != None && direction.unwrap() == self.snake.head_direction().opposite() {
             return;
         }
 
@@ -66,6 +83,10 @@ impl Game {
         if self.game_over {
             draw_rectangle(GAMEOVER_COLOR, 0, 0, WIDTH, HEIGHT, ctx, g);
         }
+
+        if self.paused {
+            draw_rectangle(PAUSED_COLOR, 0, 0, WIDTH, HEIGHT, ctx, g);
+        }
     }
 
     pub fn update(&mut self, dt: f64) {
@@ -75,6 +96,10 @@ impl Game {
             if self.waiting_time > RESTART_TIME {
                 self.restart();
             }
+            return;
+        }
+
+        if self.paused {
             return;
         }
 
@@ -107,7 +132,9 @@ impl Game {
             new_food_y = rng.gen_range(0..HEIGHT);
         }
 
-        self.food.update(new_food_x, new_food_x, true);
+        self.food.x = new_food_x;
+        self.food.y = new_food_y;
+        self.food.exist = true;
     }
 
     fn update_snake(&mut self, direction: Option<Direction>) {
